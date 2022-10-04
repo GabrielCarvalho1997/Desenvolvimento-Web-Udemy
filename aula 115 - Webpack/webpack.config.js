@@ -1,7 +1,7 @@
 const path = require('path'); //CommonJS
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'public', 'assets', 'js'),
@@ -14,15 +14,10 @@ module.exports = {
             use: {
                 loader: 'babel-loader',
                 options: {
-                    presets: ['@babel/preset-env',
-                    {
-                        targets: {
-                            esmodules: true,
-                        },
-                    },],
-                },
-            },
-        },],
+                    presets: ['@babel/env']
+                }
+            }
+        }]
     },
     devtool: 'source-map'
 };
