@@ -9,7 +9,7 @@ export default class Main extends Component {
     tarefas: []
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = (e) => {   // Esse método irá pegar a novaTarefa do state, trata-lo e adicionar no array 'tarefas' do state
     e.preventDefault();
     const { tarefas } = this.state;
     let { novaTarefa } = this.state;
@@ -24,9 +24,23 @@ export default class Main extends Component {
     })
   }
 
-  handleChange = (e) => {
+  handleChange = (e) => {   //Esse método irá pegar o valor que for digitado no input e joga-lo no 'novaTareda' do state
     this.setState({
       novaTarefa: e.target.value
+    });
+  }
+
+  handleEdit = (e, index) => {  //Esse método irá editar o item da lista
+
+  }
+
+  handleDelete = (e, index) => {  //Esse método irá apagar o item da lista
+    const { tarefas } = this.state;
+    const novasTarefas = [...tarefas];
+    novasTarefas.splice(index, 1)
+
+    this.setState({
+      tarefas: [...novasTarefas]
     });
   }
 
@@ -49,12 +63,19 @@ export default class Main extends Component {
 
 
         <ul className='tarefas'>
-          {tarefas.map(tarefa => (
+          {tarefas.map((tarefa, index) => (
             <li key={tarefa}>
               {tarefa}
               <span>
-                <FaEdit className='edit' />
-                <FaWindowClose className='delete' />
+                <FaEdit
+                className='edit'
+                onClick={(e) => this.handleEdit(e, index)}
+                />
+
+                <FaWindowClose
+                className='delete'
+                onClick={(e) => this.handleDelete(e, index)}
+                />
               </span>
             </li>
           ))}
