@@ -6,22 +6,33 @@ import './Main.css';
 export default class Main extends Component {
   state = {
     novaTarefa: '',
-    tarefas: []
+    tarefas: [],
+    index: -1
   };
 
   handleSubmit = (e) => {   // Esse método irá pegar a novaTarefa do state, trata-lo e adicionar no array 'tarefas' do state
     e.preventDefault();
-    const { tarefas } = this.state;
+    const { tarefas, index } = this.state;
     let { novaTarefa } = this.state;
     novaTarefa = novaTarefa.trim();
 
-    if (tarefas.indexOf(novaTarefa) !== -1 ) return;
+    if (tarefas.indexOf(novaTarefa) !== -1) return;
 
     const novasTarefas = [...tarefas];
 
-    this.setState({
-      tarefas: [...novasTarefas, novaTarefa],
-    })
+    if (index === -1) {
+      this.setState({
+        tarefas: [...novasTarefas, novaTarefa],
+        novaTarefa: ''
+      });
+    } else {
+      novasTarefas[index] = novaTarefa;
+
+      this.setState({
+        tarefas: [...novasTarefas],
+        index: -1
+      });
+    }
   }
 
   handleChange = (e) => {   //Esse método irá pegar o valor que for digitado no input e joga-lo no 'novaTareda' do state
@@ -31,7 +42,11 @@ export default class Main extends Component {
   }
 
   handleEdit = (e, index) => {  //Esse método irá editar o item da lista
-
+    const { tarefas } = this.state;
+    this.setState({
+      index,
+      novaTarefa: tarefas[index],
+    });
   }
 
   handleDelete = (e, index) => {  //Esse método irá apagar o item da lista
@@ -63,18 +78,18 @@ export default class Main extends Component {
 
 
         <ul className='tarefas'>
-          {tarefas.map((tarefa, index) => (
+          {tarefas.map((tarefa, index) => (  // Irá mapear cada elemento do array 'tarefas', colocando o valor de cada elemento em uma lista juntamente com os ícones de editar e deletar do própio react.
             <li key={tarefa}>
               {tarefa}
               <span>
-                <FaEdit
-                className='edit'
-                onClick={(e) => this.handleEdit(e, index)}
+                <FaEdit   //ícone de editar do própio react
+                  className='edit'
+                  onClick={(e) => this.handleEdit(e, index)}
                 />
 
                 <FaWindowClose
-                className='delete'
-                onClick={(e) => this.handleDelete(e, index)}
+                  className='delete' //ícone de fechar Janela do própio react
+                  onClick={(e) => this.handleDelete(e, index)}
                 />
               </span>
             </li>
