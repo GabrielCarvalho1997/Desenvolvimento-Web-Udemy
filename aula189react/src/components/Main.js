@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { FaPlus } from 'react-icons/fa'; //Form
-import { FaEdit, FaWindowClose } from 'react-icons/fa'; //Tarefas
+import Form from './Form';
+import Tarefas from './Tarefas';
 import './Main.css';
 
 export default class Main extends Component {
@@ -10,7 +10,24 @@ export default class Main extends Component {
     index: -1
   };
 
-  handleSubmit = (e) => {   // Esse método irá pegar a novaTarefa do state, trata-lo e adicionar no array 'tarefas' do state
+  componentDidMount() {
+    const tarefas = JSON.parse(localStorage.getItem('tarefas'));
+
+    if (!tarefas) return;
+
+    this.setState({ tarefas });
+
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { tarefas } = this.state;
+
+    if (tarefas === prevState.tarefas) return;
+
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+  }
+
+  handleSubmit = (e) => {   // Esse método irá pegar a 'novaTarefa' do state, trata-lo e adicionar no array 'tarefas' do state
     e.preventDefault();
     const { tarefas, index } = this.state;
     let { novaTarefa } = this.state;
@@ -35,7 +52,7 @@ export default class Main extends Component {
     }
   }
 
-  handleChange = (e) => {   //Esse método irá pegar o valor que for digitado no input e joga-lo no 'novaTareda' do state
+  handleChange = (e) => {   //Esse método irá pegar o valor que for digitado no input e joga-lo no 'novaTarefa' do state
     this.setState({
       novaTarefa: e.target.value
     });
@@ -65,36 +82,19 @@ export default class Main extends Component {
     return (
       <div className="main">
         <h1>Lista de tarefas</h1>
-        <form action="#" className='form' onSubmit={this.handleSubmit}>
-          <input
-            onChange={this.handleChange}
-            type="text"
-            value={novaTarefa}
-          />
-          <button type='submit' >
-            <FaPlus />
-          </button>
-        </form>
 
+        <Form
+          handleSubmit={this.handleSubmit}
+          handleChange={this.handleChange}
+          novaTarefa={novaTarefa}
+        />
 
-        <ul className='tarefas'>
-          {tarefas.map((tarefa, index) => (  // Irá mapear cada elemento do array 'tarefas', colocando o valor de cada elemento em uma lista juntamente com os ícones de editar e deletar do própio react.
-            <li key={tarefa}>
-              {tarefa}
-              <span>
-                <FaEdit   //ícone de editar do própio react
-                  className='edit'
-                  onClick={(e) => this.handleEdit(e, index)}
-                />
+        <Tarefas
+        tarefas = {tarefas}
+        handleEdit = {this.handleEdit}
+        handleDelete = {this.handleDelete}
+        />
 
-                <FaWindowClose
-                  className='delete' //ícone de fechar Janela do própio react
-                  onClick={(e) => this.handleDelete(e, index)}
-                />
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
